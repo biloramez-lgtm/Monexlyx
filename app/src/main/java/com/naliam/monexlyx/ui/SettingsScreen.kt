@@ -57,3 +57,51 @@ fun SettingsScreen(
         )
     }
 }
+
+/* =======================
+   Components (مضافة)
+   ======================= */
+
+@Composable
+private fun SettingsSwitchCard(
+    title: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(title)
+            Switch(
+                checked = checked,
+                onCheckedChange = onCheckedChange
+            )
+        }
+    }
+}
+
+@Composable
+private fun SettingsInfoCard(
+    title: String,
+    value: String
+) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(20.dp)) {
+            Text(
+                text = title,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
