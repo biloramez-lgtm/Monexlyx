@@ -5,53 +5,49 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.naliam.monexlyx.data.AppDatabase
 import com.naliam.monexlyx.data.entity.ExpenseEntity
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class ExpenseViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val expenseDao =
-        AppDatabase.getDatabase(application).expenseDao()
+    private val dao = AppDatabase
+        .getDatabase(application)
+        .expenseDao()
 
     // 📋 كل العمليات
-    val expenses = expenseDao
-        .getAllExpenses()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
+    val allExpenses: Flow<List<ExpenseEntity>> = dao.getAllExpenses()
 
     // 💰 مجموع الدخل
-    val totalIncome = expenseDao
-        .getTotalIncome()
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            0.0
-        )
+    val totalIncome: Flow<Double> = dao.getTotalIncome()
 
     // 💸 مجموع المصروف
-    val totalExpense = expenseDao
-        .getTotalExpense()
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            0.0
-        )
+    val totalExpense: Flow<Double> = dao.getTotalExpense()
 
-    // ➕ إضافة عملية
-    fun addExpense(expense: ExpenseEntity) {
+    // ➕ إضافة مصروف
+    fun addExpense(amount: Double, note: String?) {
         viewModelScope.launch {
-            expenseDao.insertExpense(expense)
+            dao.insertExpense(
+                ExpenseEntity(
+                    amount = amount,
+                    note = note,
+                    type = "expense",
+                    date = System.currentTimeMillis()
+                )
+            )
         }
     }
 
-    // 🧹 حذف الكل (اختياري)
-    fun clearAll() {
+    // ➕ إضافة دخل (جاهزة لاحقًا)
+    fun addIncome(amount: Double, note: String?) {
         viewModelScope.launch {
-            expenseDao.clearAll()
+            dao.insertExpense(
+                ExpenseEntity(
+                    amount = amount,
+                    note = note,
+                    type = "income",
+                    date = System.currentTimeMillis()
+                )
+            )
         }
     }
 }
