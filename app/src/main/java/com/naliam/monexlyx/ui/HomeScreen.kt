@@ -18,7 +18,7 @@ fun HomeScreen() {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* TODO: إضافة عملية */ }
+                onClick = { /* TODO لاحقاً: إضافة عملية */ }
             ) {
                 Icon(Icons.Default.Add, contentDescription = "إضافة عملية")
             }
@@ -33,34 +33,26 @@ fun HomeScreen() {
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
 
-            // 🔷 اسم التطبيق
+            // 🔷 عنوان التطبيق
             Text(
                 text = "Monexlyx",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold
             )
 
-            // 💰 كرت الرصيد الحالي
+            // 💰 الرصيد الحالي
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             ) {
-                Column(modifier = Modifier.padding(20.dp)) {
+                Column(Modifier.padding(20.dp)) {
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Wallet,
-                            contentDescription = null
-                        )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Wallet, contentDescription = null)
                         Spacer(Modifier.width(8.dp))
-                        Text(
-                            text = "الرصيد الحالي",
-                            fontWeight = FontWeight.Medium
-                        )
+                        Text("الرصيد الحالي", fontWeight = FontWeight.Medium)
                     }
 
                     Spacer(Modifier.height(12.dp))
@@ -71,8 +63,6 @@ fun HomeScreen() {
                         fontWeight = FontWeight.Bold
                     )
 
-                    Spacer(Modifier.height(6.dp))
-
                     Text(
                         text = "آخر تحديث: اليوم",
                         style = MaterialTheme.typography.bodySmall,
@@ -81,31 +71,22 @@ fun HomeScreen() {
                 }
             }
 
-            // 🎯 كرت هدف الادخار
+            // 🎯 هدف الادخار
             Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(20.dp)) {
+                Column(Modifier.padding(20.dp)) {
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row {
-                            Icon(
-                                imageVector = Icons.Default.TrendingUp,
-                                contentDescription = null
-                            )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.TrendingUp, contentDescription = null)
                             Spacer(Modifier.width(8.dp))
-                            Text(
-                                text = "هدف الادخار",
-                                fontWeight = FontWeight.Medium
-                            )
+                            Text("هدف الادخار", fontWeight = FontWeight.Medium)
                         }
 
-                        Text(
-                            text = "0 / 1000 $",
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                        Text("0 / 1000 $", style = MaterialTheme.typography.bodySmall)
                     }
 
                     Spacer(Modifier.height(12.dp))
@@ -118,27 +99,20 @@ fun HomeScreen() {
                     )
 
                     Spacer(Modifier.height(8.dp))
-
-                    Text(
-                        text = "0% مكتمل",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    Text("0% مكتمل", style = MaterialTheme.typography.bodyMedium)
                 }
             }
 
-            // 🎁 كرت النقاط / التحفيز
+            // 🎁 نقاط التحفيز
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer
                 )
             ) {
-                Column(modifier = Modifier.padding(20.dp)) {
+                Column(Modifier.padding(20.dp)) {
 
-                    Text(
-                        text = "🎁 نقاط التحفيز",
-                        fontWeight = FontWeight.Medium
-                    )
+                    Text("🎁 نقاط التحفيز", fontWeight = FontWeight.Medium)
 
                     Spacer(Modifier.height(8.dp))
 
@@ -147,8 +121,6 @@ fun HomeScreen() {
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     )
-
-                    Spacer(Modifier.height(4.dp))
 
                     Text(
                         text = "سجّل عملياتك يوميًا لتحصل على نقاط",
