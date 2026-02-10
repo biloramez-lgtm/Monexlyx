@@ -15,16 +15,23 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
         .expenseDao()
 
     // 📋 كل العمليات
-    val allExpenses: Flow<List<ExpenseEntity>> = dao.getAllExpenses()
+    val allExpenses: Flow<List<ExpenseEntity>> =
+        dao.getAllExpenses()
 
     // 💰 مجموع الدخل
-    val totalIncome: Flow<Double> = dao.getTotalIncome()
+    val totalIncome: Flow<Double> =
+        dao.getTotalIncome()
 
     // 💸 مجموع المصروف
-    val totalExpense: Flow<Double> = dao.getTotalExpense()
+    val totalExpense: Flow<Double> =
+        dao.getTotalExpense()
 
-    // ➕ إضافة مصروف
-    fun addExpense(amount: Double, note: String?) {
+    // =========================
+    // ➕ إضافة مصروف (من Dialog)
+    // =========================
+    fun addExpense(amountText: String, note: String?) {
+        val amount = amountText.toDoubleOrNull() ?: return
+
         viewModelScope.launch {
             dao.insertExpense(
                 ExpenseEntity(
@@ -37,8 +44,12 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    // ➕ إضافة دخل (جاهزة لاحقًا)
-    fun addIncome(amount: Double, note: String?) {
+    // =========================
+    // ➕ إضافة دخل (جاهزة)
+    // =========================
+    fun addIncome(amountText: String, note: String?) {
+        val amount = amountText.toDoubleOrNull() ?: return
+
         viewModelScope.launch {
             dao.insertExpense(
                 ExpenseEntity(
