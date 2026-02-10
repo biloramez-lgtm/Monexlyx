@@ -14,47 +14,74 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
         .getDatabase(application)
         .expenseDao()
 
-    // 📋 كل العمليات
+    /* =========================
+       📋 البيانات
+       ========================= */
+
+    // كل العمليات
     val allExpenses: Flow<List<ExpenseEntity>> =
         dao.getAllExpenses()
 
-    // 💰 مجموع الدخل
+    // مجموع الدخل
     val totalIncome: Flow<Double> =
         dao.getTotalIncome()
 
-    // 💸 مجموع المصروف
+    // مجموع المصروف
     val totalExpense: Flow<Double> =
         dao.getTotalExpense()
 
-    // =========================
-    // ➕ إضافة مصروف
-    // =========================
+    /* =========================
+       ➕ إضافة عمليات
+       ========================= */
+
     fun addExpense(amount: Double, note: String) {
-        viewModelScope.launch {
-            dao.insertExpense(
-                ExpenseEntity(
-                    amount = amount,
-                    note = note,
-                    type = "expense",
-                    date = System.currentTimeMillis()
-                )
-            )
-        }
+        addTransaction(
+            amount = amount,
+            note = note,
+            type = TransactionType.EXPENSE
+        )
     }
 
-    // =========================
-    // ➕ إضافة دخل
-    // =========================
     fun addIncome(amount: Double, note: String) {
+        addTransaction(
+            amount = amount,
+            note = note,
+            type = TransactionType.INCOME
+        )
+    }
+
+    /* =========================
+       🔧 Private helpers
+       ========================= */
+
+    private fun addTransaction(
+        amount: Double,
+        note: String,
+        type: TransactionType
+    ) {
         viewModelScope.launch {
-            dao.insertExpense(
-                ExpenseEntity(
-                    amount = amount,
-                    note = note,
-                    type = "income",
-                    date = System.currentTimeMillis()
+            try {
+                dao.insertExpense(
+                    ExpenseEntity(
+                        amount = amount,
+                        note = note.ifBlank { null },
+                        type = type.value,
+                        date = System.currentTimeMillis()
+                    )
                 )
-            )
+            } catch (e: Exception) {
+                // لاحقاً ممكن تربطه Snackbar / Log / Crashlytics
+                e.printStackTrace()
+            }
         }
     }
+}
+
+/* =========================
+   🏷 Transaction Type
+   ========================= */
+
+private enum class TransactionType(val value: String) {
+    INCOME("income"),
+    EXPENSE("expense")
 }
