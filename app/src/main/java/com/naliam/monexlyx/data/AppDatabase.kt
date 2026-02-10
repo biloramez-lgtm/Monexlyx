@@ -23,17 +23,15 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
+                INSTANCE ?: Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     "monexlyx_db"
                 )
-                    // 🔒 حماية عند تحديث النسخ
+                    // ⚠️ مؤقتاً OK أثناء التطوير
                     .fallbackToDestructiveMigration()
                     .build()
-
-                INSTANCE = instance
-                instance
+                    .also { INSTANCE = it }
             }
         }
     }
