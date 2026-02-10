@@ -33,32 +33,31 @@ fun StatsScreen() {
         StatCard(
             title = "مجموع الدخل",
             value = "0 $",
-            icon = Icons.Default.TrendingUp
+            icon = Icons.Default.TrendingUp,
+            containerColor = MaterialTheme.colorScheme.primaryContainer
         )
 
         // 💸 مجموع المصروف
         StatCard(
             title = "مجموع المصروف",
             value = "0 $",
-            icon = Icons.Default.TrendingDown
+            icon = Icons.Default.TrendingDown,
+            containerColor = MaterialTheme.colorScheme.errorContainer
         )
 
         // 📈 نسبة الادخار
-        Card(modifier = Modifier.fillMaxWidth()) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer
+            )
+        ) {
             Column(modifier = Modifier.padding(20.dp)) {
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.PieChart,
-                        contentDescription = null
-                    )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.PieChart, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = "نسبة الادخار",
-                        fontWeight = FontWeight.Medium
-                    )
+                    Text("نسبة الادخار", fontWeight = FontWeight.Medium)
                 }
 
                 Spacer(Modifier.height(12.dp))
@@ -72,14 +71,11 @@ fun StatsScreen() {
 
                 Spacer(Modifier.height(8.dp))
 
-                Text(
-                    text = "0%",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                Text("0%", style = MaterialTheme.typography.bodyMedium)
             }
         }
 
-        // 🚧 Placeholder للمخططات
+        // 🚧 مخططات مستقبلية
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
@@ -90,14 +86,12 @@ fun StatsScreen() {
                 modifier = Modifier.padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "📊 مخططات شهرية",
-                    fontWeight = FontWeight.Medium
-                )
+                Text("📊 مخططات شهرية", fontWeight = FontWeight.Medium)
                 Spacer(Modifier.height(6.dp))
                 Text(
                     text = "سيتم إضافة الرسوم البيانية قريبًا",
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -108,20 +102,19 @@ fun StatsScreen() {
 private fun StatCard(
     title: String,
     value: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    containerColor: androidx.compose.ui.graphics.Color
 ) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = containerColor)
+    ) {
         Column(modifier = Modifier.padding(20.dp)) {
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(icon, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
-                Text(
-                    text = title,
-                    fontWeight = FontWeight.Medium
-                )
+                Text(title, fontWeight = FontWeight.Medium)
             }
 
             Spacer(Modifier.height(8.dp))
