@@ -52,14 +52,14 @@ class MainActivity : ComponentActivity() {
                     expenseViewModel = expenseViewModel,
                     darkMode = darkMode,
                     notificationsEnabled = notificationsEnabled,
-                    onDarkModeChange = {
+                    onDarkModeChange = { enabled ->
                         coroutineScope.launch {
-                            settingsStore.setDarkMode(it)
+                            settingsStore.setDarkMode(enabled)
                         }
                     },
-                    onNotificationsChange = {
+                    onNotificationsChange = { enabled ->
                         coroutineScope.launch {
-                            settingsStore.setNotifications(it)
+                            settingsStore.setNotifications(enabled)
                         }
                     }
                 )
@@ -131,7 +131,12 @@ private fun NavItem(
     NavigationBarItem(
         selected = selected,
         onClick = onClick,
-        icon = { Icon(icon, contentDescription = label) },
-        label = { Text(label) }
+        icon = {
+            Icon(
+                imageVector = icon,
+                contentDescription = label
+            )
+        },
+        label = { Text(text = label) }
     )
 }
