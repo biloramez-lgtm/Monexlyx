@@ -2,11 +2,11 @@
 <resources>
 
     <!-- Base application theme (minimal, Compose handles UI theme) -->
-    <style name="Theme.Monexlyx" parent="Theme.NoActionBar">
+    <style name="Theme.Monexlyx"
+        parent="Theme.Material3.DayNight.NoActionBar">
 
         <!-- Transparent status bar -->
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">true</item>
 
         <!-- No ActionBar -->
         <item name="android:windowActionBar">false</item>
