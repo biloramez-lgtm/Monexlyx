@@ -13,7 +13,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.naliam.monexlyx.data.SettingsDataStore
 import com.naliam.monexlyx.data.db.ExpenseViewModel
@@ -28,13 +27,24 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val settingsStore = SettingsDataStore(this)
+        val settingsStore = SettingsDataStore(applicationContext)
 
         setContent {
 
+            /* =======================
+               Compose CoroutineScope
+               ======================= */
+            val coroutineScope = rememberCoroutineScope()
+
+            /* =======================
+               DataStore states
+               ======================= */
             val darkMode by settingsStore.darkModeFlow.collectAsState(initial = false)
             val notificationsEnabled by settingsStore.notificationsFlow.collectAsState(initial = true)
 
+            /* =======================
+               ViewModel
+               ======================= */
             val expenseViewModel: ExpenseViewModel = viewModel()
 
             MonexlyxTheme(
@@ -45,14 +55,14 @@ class MainActivity : ComponentActivity() {
                     expenseViewModel = expenseViewModel,
                     darkMode = darkMode,
                     notificationsEnabled = notificationsEnabled,
-                    onDarkModeChange = {
-                        lifecycleScope.launch {
-                            settingsStore.setDarkMode(it)
+                    onDarkModeChange = { enabled ->
+                        coroutineScope.launch {
+                            settingsStore.setDarkMode(enabled)
                         }
                     },
-                    onNotificationsChange = {
-                        lifecycleScope.launch {
-                            settingsStore.setNotifications(it)
+                    onNotificationsChange = { enabled ->
+                        coroutineScope.launch {
+                            settingsStore.setNotifications(enabled)
                         }
                     }
                 )
@@ -60,6 +70,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+/* =======================
+   Navigation Root
+   ======================= */
 
 @Composable
 fun AppRoot(
@@ -113,6 +127,10 @@ fun AppRoot(
         }
     }
 }
+
+/* =======================
+   Bottom Navigation Item
+   ======================= */
 
 @Composable
 private fun NavItem(
