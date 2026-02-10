@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Night Theme for Jetpack Compose (Material 3) -->
-    <style name="Theme.Monexlyx" parent="Theme.Material3.DayNight.NoActionBar">
+    <!-- Night theme (Compose handles dark colors) -->
+    <style name="Theme.Monexlyx" parent="Theme.NoActionBar">
 
-        <!-- Status bar -->
+        <!-- Transparent status bar -->
         <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <!-- Night mode status bar icons -->
         <item name="android:windowLightStatusBar">false</item>
 
-        <!-- Disable ActionBar -->
+        <!-- No ActionBar -->
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
 
