@@ -3,9 +3,7 @@ package com.naliam.monexlyx
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -25,15 +23,33 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MonexlyxTheme {
-                AppRoot()
+
+            // 🔧 STATES GLOBAL (مربوطة فعليًا)
+            var darkMode by rememberSaveable { mutableStateOf(false) }
+            var notificationsEnabled by rememberSaveable { mutableStateOf(true) }
+
+            MonexlyxTheme(
+                darkTheme = darkMode,
+                dynamicColor = false
+            ) {
+                AppRoot(
+                    darkMode = darkMode,
+                    notificationsEnabled = notificationsEnabled,
+                    onDarkModeChange = { darkMode = it },
+                    onNotificationsChange = { notificationsEnabled = it }
+                )
             }
         }
     }
 }
 
 @Composable
-fun AppRoot() {
+fun AppRoot(
+    darkMode: Boolean,
+    notificationsEnabled: Boolean,
+    onDarkModeChange: (Boolean) -> Unit,
+    onNotificationsChange: (Boolean) -> Unit
+) {
 
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
@@ -70,7 +86,12 @@ fun AppRoot() {
             when (selectedTab) {
                 0 -> HomeScreen()
                 1 -> StatsScreen()
-                2 -> SettingsScreen()
+                2 -> SettingsScreen(
+                    darkMode = darkMode,
+                    notificationsEnabled = notificationsEnabled,
+                    onDarkModeChange = onDarkModeChange,
+                    onNotificationsChange = onNotificationsChange
+                )
             }
         }
     }
