@@ -3,21 +3,23 @@ package com.naliam.monexlyx.data.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "expenses")
+@Entity(
+    tableName = "expenses"
+)
 data class ExpenseEntity(
 
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Long = 0L,
 
-    // المبلغ
+    // 💰 المبلغ
     val amount: Double,
 
-    // نوع العملية: "expense" أو "income"
+    // 🔖 نوع العملية: income / expense
     val type: String,
 
-    // وصف اختياري (مثلاً: أكل، مواصلات...)
+    // 📝 ملاحظة اختيارية
     val note: String = "",
 
-    // التاريخ (timestamp)
+    // 🕒 التاريخ (Timestamp)
     val date: Long = System.currentTimeMillis()
 )
