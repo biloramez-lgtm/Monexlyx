@@ -18,7 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.naliam.monexlyx.data.db.ExpenseViewModel
 import com.naliam.monexlyx.data.entity.ExpenseEntity
 import java.text.SimpleDateFormat
@@ -26,7 +25,7 @@ import java.util.*
 
 @Composable
 fun HomeScreen(
-    expenseViewModel: ExpenseViewModel = viewModel()
+    expenseViewModel: ExpenseViewModel
 ) {
     val context = LocalContext.current
 
@@ -204,9 +203,9 @@ private fun TransactionItem(expense: ExpenseEntity) {
 
             Column(Modifier.weight(1f)) {
                 Text(
-                    text = expense.note.ifBlank {
+                    text = expense.note?.ifBlank {
                         if (isIncome) "دخل" else "مصروف"
-                    },
+                    } ?: if (isIncome) "دخل" else "مصروف",
                     fontWeight = FontWeight.Medium
                 )
                 Text(
