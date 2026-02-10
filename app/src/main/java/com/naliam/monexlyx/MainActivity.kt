@@ -16,11 +16,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.naliam.monexlyx.data.SettingsDataStore
+import com.naliam.monexlyx.data.db.ExpenseViewModel
 import com.naliam.monexlyx.ui.HomeScreen
 import com.naliam.monexlyx.ui.SettingsScreen
 import com.naliam.monexlyx.ui.StatsScreen
 import com.naliam.monexlyx.ui.theme.MonexlyxTheme
-import com.naliam.monexlyx.data.db.ExpenseViewModel
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -32,11 +32,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-            // 🔧 STATES مربوطة بـ DataStore
+            // 🔧 DataStore states
             val darkMode by settingsStore.darkModeFlow.collectAsState(initial = false)
             val notificationsEnabled by settingsStore.notificationsFlow.collectAsState(initial = true)
 
-            // ✅ ExpenseViewModel (مربوط بالتطبيق)
+            // ✅ ViewModel (AndroidViewModel شغال صح)
             val expenseViewModel: ExpenseViewModel = viewModel()
 
             MonexlyxTheme(
@@ -105,9 +105,7 @@ fun AppRoot(
                 .padding(paddingValues)
         ) {
             when (selectedTab) {
-                0 -> HomeScreen(
-                    expenseViewModel = expenseViewModel
-                )
+                0 -> HomeScreen(expenseViewModel = expenseViewModel)
                 1 -> StatsScreen()
                 2 -> SettingsScreen(
                     darkMode = darkMode,
