@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.naliam.monexlyx.data.AppDatabase
 import com.naliam.monexlyx.data.entity.ExpenseEntity
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class ExpenseViewModel(application: Application) : AndroidViewModel(application) {
@@ -15,43 +15,51 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
         .expenseDao()
 
     /* =========================
-       📋 البيانات
+       📋 StateFlow للـ Compose
        ========================= */
 
-    // كل العمليات
-    val allExpenses: Flow<List<ExpenseEntity>> =
+    val allExpenses: StateFlow<List<ExpenseEntity>> =
         dao.getAllExpenses()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList()
+            )
 
-    // مجموع الدخل
-    val totalIncome: Flow<Double> =
+    val totalIncome: StateFlow<Double> =
         dao.getTotalIncome()
+            .map { it ?: 0.0 }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = 0.0
+            )
 
-    // مجموع المصروف
-    val totalExpense: Flow<Double> =
+    val totalExpense: StateFlow<Double> =
         dao.getTotalExpense()
+            .map { it ?: 0.0 }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = 0.0
+            )
 
     /* =========================
        ➕ إضافة عمليات
        ========================= */
 
     fun addExpense(amount: Double, note: String) {
-        addTransaction(
-            amount = amount,
-            note = note,
-            type = TransactionType.EXPENSE
-        )
+        if (amount <= 0) return
+        addTransaction(amount, note, TransactionType.EXPENSE)
     }
 
     fun addIncome(amount: Double, note: String) {
-        addTransaction(
-            amount = amount,
-            note = note,
-            type = TransactionType.INCOME
-        )
+        if (amount <= 0) return
+        addTransaction(amount, note, TransactionType.INCOME)
     }
 
     /* =========================
-       🔧 Private helpers
+       🔧 داخلية
        ========================= */
 
     private fun addTransaction(
@@ -60,28 +68,23 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
         type: TransactionType
     ) {
         viewModelScope.launch {
-            try {
-                dao.insertExpense(
-                    ExpenseEntity(
-                        amount = amount,
-                        note = note.ifBlank { null },
-                        type = type.value,
-                        date = System.currentTimeMillis()
-                    )
+            dao.insertExpense(
+                ExpenseEntity(
+                    amount = amount,
+                    note = note.ifBlank { "" }, // ✅ String وليس String?
+                    type = type.value,
+                    date = System.currentTimeMillis()
                 )
-            } catch (e: Exception) {
-                // لاحقاً ممكن تربطه Snackbar / Log / Crashlytics
-                e.printStackTrace()
-            }
+            )
         }
     }
 }
 
 /* =========================
-   🏷 Transaction Type
+   🏷 نوع العملية
    ========================= */
 
-private enum class TransactionType(val value: String) {
+enum class TransactionType(val value: String) {
     INCOME("income"),
     EXPENSE("expense")
 }
