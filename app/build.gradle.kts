@@ -52,18 +52,24 @@ android {
 
 dependencies {
 
-    // Core
+    // 🔹 Core
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
 
-    // Compose
+    // 🔹 AppCompat (ضروري لـ Theme.NoActionBar)
+    implementation("androidx.appcompat:appcompat:1.6.1")
+
+    // 🔹 Material Components (ضروري لأي Theme.Material / XML)
+    implementation("com.google.android.material:material:1.11.0")
+
+    // 🔹 Jetpack Compose
     implementation(platform("androidx.compose:compose-bom:2024.02.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
 
-    // Debug
+    // 🔹 Debug
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
