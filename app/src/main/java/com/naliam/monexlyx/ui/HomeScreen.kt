@@ -1,8 +1,13 @@
 package com.naliam.monexlyx.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -10,118 +15,168 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun HomeScreen() {
 
-Column(
-modifier = Modifier
-.fillMaxSize()
-.padding(20.dp),
-verticalArrangement = Arrangement.spacedBy(20.dp)
-) {
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { /* TODO: إضافة عملية */ }
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "إضافة عملية")
+            }
+        }
+    ) { paddingValues ->
 
-// 🔷 اسم التطبيق
-Text(
-text = "Monexlyx",
-style = MaterialTheme.typography.headlineLarge,
-fontWeight = FontWeight.Bold
-)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
 
-// 💰 كرت الرصيد الحالي
-Card(
-modifier = Modifier.fillMaxWidth(),
-colors = CardDefaults.cardColors(
-containerColor = MaterialTheme.colorScheme.primaryContainer
-)
-) {
-Column(modifier = Modifier.padding(20.dp)) {
+            // 🔷 اسم التطبيق
+            Text(
+                text = "Monexlyx",
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold
+            )
 
-Text(
-text = "💰 الرصيد الحالي",
-fontWeight = FontWeight.Medium
-)
+            // 💰 كرت الرصيد الحالي
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
 
-Spacer(Modifier.height(8.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Wallet,
+                            contentDescription = null
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            text = "الرصيد الحالي",
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
 
-Text(
-text = "0 $",
-style = MaterialTheme.typography.displaySmall,
-fontWeight = FontWeight.Bold
-)
+                    Spacer(Modifier.height(12.dp))
 
-Spacer(Modifier.height(6.dp))
+                    Text(
+                        text = "0 $",
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.Bold
+                    )
 
-Text(
-text = "آخر تحديث: اليوم",
-style = MaterialTheme.typography.bodySmall,
-color = MaterialTheme.colorScheme.onSurfaceVariant
-)
-}
-}
+                    Spacer(Modifier.height(6.dp))
 
-// 🎯 كرت هدف الادخار
-Card(modifier = Modifier.fillMaxWidth()) {
-Column(modifier = Modifier.padding(20.dp)) {
+                    Text(
+                        text = "آخر تحديث: اليوم",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
 
-Row(
-modifier = Modifier.fillMaxWidth(),
-horizontalArrangement = Arrangement.SpaceBetween
-) {
-Text(
-text = "🎯 هدف الادخار",
-fontWeight = FontWeight.Medium
-)
-Text(
-text = "0 / 1000 $",
-style = MaterialTheme.typography.bodySmall
-)
-}
+            // 🎯 كرت هدف الادخار
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(20.dp)) {
 
-Spacer(Modifier.height(12.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row {
+                            Icon(
+                                imageVector = Icons.Default.TrendingUp,
+                                contentDescription = null
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                text = "هدف الادخار",
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
 
-LinearProgressIndicator(
-progress = 0f,
-modifier = Modifier
-.fillMaxWidth()
-.height(8.dp)
-)
+                        Text(
+                            text = "0 / 1000 $",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
 
-Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(12.dp))
 
-Text(
-text = "0% مكتمل",
-style = MaterialTheme.typography.bodyMedium
-)
-}
-}
+                    LinearProgressIndicator(
+                        progress = 0f,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(8.dp)
+                    )
 
-// 🎁 كرت النقاط / الهدايا
-Card(
-modifier = Modifier.fillMaxWidth(),
-colors = CardDefaults.cardColors(
-containerColor = MaterialTheme.colorScheme.secondaryContainer
-)
-) {
-Column(modifier = Modifier.padding(20.dp)) {
+                    Spacer(Modifier.height(8.dp))
 
-Text(
-text = "🎁 نقاط التحفيز",
-fontWeight = FontWeight.Medium
-)
+                    Text(
+                        text = "0% مكتمل",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
 
-Spacer(Modifier.height(8.dp))
+            // 🎁 كرت النقاط / التحفيز
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                )
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
 
-Text(
-text = "0 نقطة",
-style = MaterialTheme.typography.headlineSmall,
-fontWeight = FontWeight.Bold
-)
-}
-}
+                    Text(
+                        text = "🎁 نقاط التحفيز",
+                        fontWeight = FontWeight.Medium
+                    )
 
-// ➕ زر إضافة
-Button(
-onClick = { },
-modifier = Modifier.fillMaxWidth()
-) {
-Text("➕ إضافة عملية")
-}
-}
+                    Spacer(Modifier.height(8.dp))
+
+                    Text(
+                        text = "0 نقطة",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(Modifier.height(4.dp))
+
+                    Text(
+                        text = "سجّل عملياتك يوميًا لتحصل على نقاط",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+
+            // ⚡ أزرار سريعة
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+
+                OutlinedButton(
+                    onClick = { /* TODO */ },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("➕ مصروف")
+                }
+
+                OutlinedButton(
+                    onClick = { /* TODO */ },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("💾 دخل")
+                }
+            }
+        }
+    }
 }
