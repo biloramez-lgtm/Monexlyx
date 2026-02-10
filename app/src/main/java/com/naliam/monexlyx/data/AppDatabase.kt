@@ -27,7 +27,11 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "monexlyx_db"
-                ).build()
+                )
+                    // 🔒 حماية عند تحديث النسخ
+                    .fallbackToDestructiveMigration()
+                    .build()
+
                 INSTANCE = instance
                 instance
             }
