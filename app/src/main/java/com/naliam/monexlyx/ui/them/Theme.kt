@@ -17,13 +17,9 @@ import androidx.compose.ui.platform.LocalContext
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryLight,
     onPrimary = OnPrimaryLight,
-    primaryContainer = PrimaryContainerLight,
-    onPrimaryContainer = OnPrimaryContainerLight,
 
     secondary = SecondaryLight,
     onSecondary = OnSecondaryLight,
-    secondaryContainer = SecondaryContainerLight,
-    onSecondaryContainer = OnSecondaryContainerLight,
 
     background = BackgroundLight,
     onBackground = OnBackgroundLight,
@@ -38,13 +34,9 @@ private val LightColorScheme = lightColorScheme(
 private val DarkColorScheme = darkColorScheme(
     primary = PrimaryDark,
     onPrimary = OnPrimaryDark,
-    primaryContainer = PrimaryContainerDark,
-    onPrimaryContainer = OnPrimaryContainerDark,
 
     secondary = SecondaryDark,
     onSecondary = OnSecondaryDark,
-    secondaryContainer = SecondaryContainerDark,
-    onSecondaryContainer = OnSecondaryContainerDark,
 
     background = BackgroundDark,
     onBackground = OnBackgroundDark,
@@ -63,7 +55,7 @@ private val DarkColorScheme = darkColorScheme(
 @Composable
 fun MonexlyxTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true, // Android 12+
+    dynamicColor: Boolean = false, // نعطّله افتراضيًا للثبات
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
