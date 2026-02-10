@@ -1,48 +1,45 @@
 package com.naliam.monexlyx.data
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
-    application: Application
-) : AndroidViewModel(application) {
+    private val settingsDataStore: SettingsDataStore
+) : ViewModel() {
 
-    private val dataStore = SettingsDataStore(application)
+    // Flows
+    val darkModeFlow: Flow<Boolean> = settingsDataStore.darkModeFlow
+    val notificationsFlow: Flow<Boolean> = settingsDataStore.notificationsFlow
 
-    // 🌙 Dark Mode
-    val darkMode: StateFlow<Boolean> =
-        dataStore.darkModeFlow.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = false
-        )
-
-    // 🔔 Notifications
-    val notificationsEnabled: StateFlow<Boolean> =
-        dataStore.notificationsFlow.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = true
-        )
-
-    // =========================
     // Actions
-    // =========================
-
     fun setDarkMode(enabled: Boolean) {
         viewModelScope.launch {
-            dataStore.setDarkMode(enabled)
+            settingsDataStore.setDarkMode(enabled)
         }
     }
 
     fun setNotifications(enabled: Boolean) {
         viewModelScope.launch {
-            dataStore.setNotifications(enabled)
+            settingsDataStore.setNotifications(enabled)
         }
+    }
+}
+
+/**
+ * Factory لتمرير Context بشكل نظيف
+ */
+class SettingsViewModelFactory(
+    private val settingsDataStore: SettingsDataStore
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return SettingsViewModel(settingsDataStore) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
