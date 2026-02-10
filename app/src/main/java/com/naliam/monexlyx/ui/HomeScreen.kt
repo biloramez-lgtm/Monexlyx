@@ -6,19 +6,23 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun HomeScreen() {
 
+    // 🔧 Dialog state
+    var showAddExpenseDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* TODO لاحقاً: إضافة عملية */ }
+                onClick = { showAddExpenseDialog = true }
             ) {
                 Icon(Icons.Default.Add, contentDescription = "إضافة عملية")
             }
@@ -136,14 +140,14 @@ fun HomeScreen() {
             ) {
 
                 OutlinedButton(
-                    onClick = { /* TODO */ },
+                    onClick = { showAddExpenseDialog = true },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("➕ مصروف")
                 }
 
                 OutlinedButton(
-                    onClick = { /* TODO */ },
+                    onClick = { /* لاحقًا: إضافة دخل */ },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("💾 دخل")
@@ -151,4 +155,70 @@ fun HomeScreen() {
             }
         }
     }
+
+    // =========================
+    // 💸 Dialog إضافة مصروف
+    // =========================
+    if (showAddExpenseDialog) {
+        AddExpenseDialog(
+            onDismiss = { showAddExpenseDialog = false },
+            onSave = { amount, note ->
+                // 🔜 لاحقًا: حفظ في Room / ViewModel
+                showAddExpenseDialog = false
+            }
+        )
+    }
+}
+
+@Composable
+private fun AddExpenseDialog(
+    onDismiss: () -> Unit,
+    onSave: (amount: String, note: String) -> Unit
+) {
+    var amount by remember { mutableStateOf("") }
+    var note by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onSave(amount, note)
+                },
+                enabled = amount.isNotBlank()
+            ) {
+                Text("حفظ")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("إلغاء")
+            }
+        },
+        title = {
+            Text("➕ إضافة مصروف")
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+
+                OutlinedTextField(
+                    value = amount,
+                    onValueChange = { amount = it },
+                    label = { Text("المبلغ") },
+                    keyboardOptions = androidx.compose.ui.text.input.KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedTextField(
+                    value = note,
+                    onValueChange = { note = it },
+                    label = { Text("ملاحظة (اختياري)") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    )
 }
