@@ -1,8 +1,13 @@
 package com.naliam.monexlyx.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PieChart
+import androidx.compose.material.icons.filled.TrendingDown
+import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -10,65 +15,122 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun StatsScreen() {
 
-Column(
-modifier = Modifier
-.fillMaxSize()
-.padding(20.dp),
-verticalArrangement = Arrangement.spacedBy(20.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+
+        // 📊 العنوان
+        Text(
+            text = "الإحصائيات",
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold
+        )
+
+        // 💰 مجموع الدخل
+        StatCard(
+            title = "مجموع الدخل",
+            value = "0 $",
+            icon = Icons.Default.TrendingUp
+        )
+
+        // 💸 مجموع المصروف
+        StatCard(
+            title = "مجموع المصروف",
+            value = "0 $",
+            icon = Icons.Default.TrendingDown
+        )
+
+        // 📈 نسبة الادخار
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(20.dp)) {
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PieChart,
+                        contentDescription = null
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = "نسبة الادخار",
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+                Spacer(Modifier.height(12.dp))
+
+                LinearProgressIndicator(
+                    progress = 0f,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    text = "0%",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
+
+        // 🚧 Placeholder للمخططات
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "📊 مخططات شهرية",
+                    fontWeight = FontWeight.Medium
+                )
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = "سيتم إضافة الرسوم البيانية قريبًا",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatCard(
+    title: String,
+    value: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector
 ) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(20.dp)) {
 
-// 📊 العنوان
-Text(
-text = "الإحصائيات",
-style = MaterialTheme.typography.headlineLarge,
-fontWeight = FontWeight.Bold
-)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(icon, contentDescription = null)
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = title,
+                    fontWeight = FontWeight.Medium
+                )
+            }
 
-// 💰 مجموع الدخل
-Card(modifier = Modifier.fillMaxWidth()) {
-Column(modifier = Modifier.padding(20.dp)) {
-Text("💰 مجموع الدخل", fontWeight = FontWeight.Medium)
-Spacer(Modifier.height(8.dp))
-Text(
-text = "0 $",
-style = MaterialTheme.typography.headlineMedium
-)
-}
-}
+            Spacer(Modifier.height(8.dp))
 
-// 💸 مجموع المصروف
-Card(modifier = Modifier.fillMaxWidth()) {
-Column(modifier = Modifier.padding(20.dp)) {
-Text("💸 مجموع المصروف", fontWeight = FontWeight.Medium)
-Spacer(Modifier.height(8.dp))
-Text(
-text = "0 $",
-style = MaterialTheme.typography.headlineMedium
-)
-}
-}
-
-// 📈 نسبة الادخار
-Card(modifier = Modifier.fillMaxWidth()) {
-Column(modifier = Modifier.padding(20.dp)) {
-Text("📈 نسبة الادخار", fontWeight = FontWeight.Medium)
-Spacer(Modifier.height(12.dp))
-LinearProgressIndicator(progress = 0f)
-Spacer(Modifier.height(8.dp))
-Text("0%")
-}
-}
-
-// 🚧 قادم
-Card(
-modifier = Modifier.fillMaxWidth(),
-colors = CardDefaults.cardColors(
-containerColor = MaterialTheme.colorScheme.surfaceVariant
-)
-) {
-Column(modifier = Modifier.padding(20.dp)) {
-Text("🚧 المزيد من الإحصائيات قريبًا")
-}
-}
-}
+            Text(
+                text = value,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
 }
