@@ -27,11 +27,9 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
         dao.getTotalExpense()
 
     // =========================
-    // ➕ إضافة مصروف (من Dialog)
+    // ➕ إضافة مصروف
     // =========================
-    fun addExpense(amountText: String, note: String?) {
-        val amount = amountText.toDoubleOrNull() ?: return
-
+    fun addExpense(amount: Double, note: String) {
         viewModelScope.launch {
             dao.insertExpense(
                 ExpenseEntity(
@@ -45,11 +43,9 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
     }
 
     // =========================
-    // ➕ إضافة دخل (جاهزة)
+    // ➕ إضافة دخل
     // =========================
-    fun addIncome(amountText: String, note: String?) {
-        val amount = amountText.toDoubleOrNull() ?: return
-
+    fun addIncome(amount: Double, note: String) {
         viewModelScope.launch {
             dao.insertExpense(
                 ExpenseEntity(
