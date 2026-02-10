@@ -1,5 +1,6 @@
 package com.naliam.monexlyx.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -9,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -18,21 +20,26 @@ import com.naliam.monexlyx.data.db.ExpenseViewModel
 fun HomeScreen(
     expenseViewModel: ExpenseViewModel
 ) {
+    val context = LocalContext.current
+
     // 🔗 Room flows
     val totalIncome by expenseViewModel.totalIncome.collectAsState(initial = 0.0)
     val totalExpense by expenseViewModel.totalExpense.collectAsState(initial = 0.0)
-
     val balance = totalIncome - totalExpense
 
     // 🔧 Dialog state
-    var showAddExpenseDialog by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    var isIncome by remember { mutableStateOf(false) }
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { showAddExpenseDialog = true }
+                onClick = {
+                    isIncome = false
+                    showDialog = true
+                }
             ) {
-                Icon(Icons.Default.Add, contentDescription = "إضافة مصروف")
+                Icon(Icons.Default.Add, contentDescription = "إضافة عملية")
             }
         }
     ) { paddingValues ->
@@ -45,7 +52,6 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
 
-            // 🔷 العنوان
             Text(
                 text = "Monexlyx",
                 style = MaterialTheme.typography.headlineLarge,
@@ -83,59 +89,6 @@ fun HomeScreen(
                 }
             }
 
-            // 🎯 هدف الادخار (ثابت حاليًا)
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(20.dp)) {
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.TrendingUp, contentDescription = null)
-                            Spacer(Modifier.width(8.dp))
-                            Text("هدف الادخار", fontWeight = FontWeight.Medium)
-                        }
-                        Text("0 / 1000 $", style = MaterialTheme.typography.bodySmall)
-                    }
-
-                    Spacer(Modifier.height(12.dp))
-
-                    LinearProgressIndicator(
-                        progress = 0f,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(8.dp)
-                    )
-
-                    Spacer(Modifier.height(8.dp))
-                    Text("0% مكتمل")
-                }
-            }
-
-            // 🎁 نقاط التحفيز
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                )
-            ) {
-                Column(Modifier.padding(20.dp)) {
-                    Text("🎁 نقاط التحفيز", fontWeight = FontWeight.Medium)
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        text = "0 نقطة",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "سجّل عملياتك يوميًا لتحصل على نقاط",
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            }
-
             // ⚡ أزرار سريعة
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -143,14 +96,20 @@ fun HomeScreen(
             ) {
 
                 OutlinedButton(
-                    onClick = { showAddExpenseDialog = true },
+                    onClick = {
+                        isIncome = false
+                        showDialog = true
+                    },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("➕ مصروف")
                 }
 
                 OutlinedButton(
-                    onClick = { /* لاحقًا دخل */ },
+                    onClick = {
+                        isIncome = true
+                        showDialog = true
+                    },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("💾 دخل")
@@ -160,21 +119,41 @@ fun HomeScreen(
     }
 
     // =========================
-    // 💸 Dialog إضافة مصروف (مربوط مع Room فعليًا)
+    // 💸 Dialog (دخل / مصروف)
     // =========================
-    if (showAddExpenseDialog) {
-        AddExpenseDialog(
-            onDismiss = { showAddExpenseDialog = false },
+    if (showDialog) {
+        AddTransactionDialog(
+            isIncome = isIncome,
+            onDismiss = { showDialog = false },
             onSave = { amount, note ->
-                expenseViewModel.addExpense(amount, note)
-                showAddExpenseDialog = false
+                val value = amount.toDoubleOrNull()
+
+                if (value == null || value <= 0) {
+                    Toast.makeText(
+                        context,
+                        "❌ أدخل مبلغ صحيح",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@AddTransactionDialog
+                }
+
+                if (isIncome) {
+                    expenseViewModel.addIncome(value, note)
+                    Toast.makeText(context, "✅ تم إضافة الدخل", Toast.LENGTH_SHORT).show()
+                } else {
+                    expenseViewModel.addExpense(value, note)
+                    Toast.makeText(context, "✅ تم إضافة المصروف", Toast.LENGTH_SHORT).show()
+                }
+
+                showDialog = false
             }
         )
     }
 }
 
 @Composable
-private fun AddExpenseDialog(
+private fun AddTransactionDialog(
+    isIncome: Boolean,
     onDismiss: () -> Unit,
     onSave: (amount: String, note: String) -> Unit
 ) {
@@ -186,7 +165,7 @@ private fun AddExpenseDialog(
         confirmButton = {
             TextButton(
                 onClick = { onSave(amount, note) },
-                enabled = amount.toDoubleOrNull() != null
+                enabled = amount.toDoubleOrNull()?.let { it > 0 } == true
             ) {
                 Text("حفظ")
             }
@@ -196,7 +175,9 @@ private fun AddExpenseDialog(
                 Text("إلغاء")
             }
         },
-        title = { Text("➕ إضافة مصروف") },
+        title = {
+            Text(if (isIncome) "💾 إضافة دخل" else "➕ إضافة مصروف")
+        },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
 
