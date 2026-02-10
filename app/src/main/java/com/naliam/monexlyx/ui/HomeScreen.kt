@@ -5,8 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -14,8 +15,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.naliam.monexlyx.data.db.ExpenseViewModel
 import com.naliam.monexlyx.data.entity.ExpenseEntity
 import java.text.SimpleDateFormat
@@ -23,13 +26,13 @@ import java.util.*
 
 @Composable
 fun HomeScreen(
-    expenseViewModel: ExpenseViewModel
+    expenseViewModel: ExpenseViewModel = viewModel()
 ) {
     val context = LocalContext.current
 
-    val totalIncome by expenseViewModel.totalIncome.collectAsState(initial = 0.0)
-    val totalExpense by expenseViewModel.totalExpense.collectAsState(initial = 0.0)
-    val allExpenses by expenseViewModel.allExpenses.collectAsState(initial = emptyList())
+    val totalIncome by expenseViewModel.totalIncome.collectAsState()
+    val totalExpense by expenseViewModel.totalExpense.collectAsState()
+    val allExpenses by expenseViewModel.allExpenses.collectAsState()
 
     val balance = totalIncome - totalExpense
 
@@ -44,15 +47,15 @@ fun HomeScreen(
                     showDialog = true
                 }
             ) {
-                Icon(Icons.Default.Add, contentDescription = "إضافة عملية")
+                Icon(Icons.Default.Add, contentDescription = null)
             }
         }
-    ) { paddingValues ->
+    ) { padding ->
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(padding)
                 .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
@@ -94,28 +97,28 @@ fun HomeScreen(
                 }
             }
 
-            // ⚡ أزرار
+            // أزرار الإضافة
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
 
                 OutlinedButton(
+                    modifier = Modifier.weight(1f),
                     onClick = {
                         isIncome = false
                         showDialog = true
-                    },
-                    modifier = Modifier.weight(1f)
+                    }
                 ) {
                     Text("➕ مصروف")
                 }
 
                 OutlinedButton(
+                    modifier = Modifier.weight(1f),
                     onClick = {
                         isIncome = true
                         showDialog = true
-                    },
-                    modifier = Modifier.weight(1f)
+                    }
                 ) {
                     Text("💾 دخل")
                 }
@@ -134,8 +137,7 @@ fun HomeScreen(
                 )
             } else {
                 LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(allExpenses.take(5)) { expense ->
                         TransactionItem(expense)
@@ -159,10 +161,8 @@ fun HomeScreen(
 
                 if (isIncome) {
                     expenseViewModel.addIncome(value, note)
-                    Toast.makeText(context, "✅ تم إضافة الدخل", Toast.LENGTH_SHORT).show()
                 } else {
                     expenseViewModel.addExpense(value, note)
-                    Toast.makeText(context, "✅ تم إضافة المصروف", Toast.LENGTH_SHORT).show()
                 }
 
                 showDialog = false
@@ -175,10 +175,12 @@ fun HomeScreen(
 private fun TransactionItem(expense: ExpenseEntity) {
     val isIncome = expense.type == "income"
     val color =
-        if (isIncome) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+        if (isIncome) MaterialTheme.colorScheme.primary
+        else MaterialTheme.colorScheme.error
 
     val date = remember(expense.date) {
-        SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date(expense.date))
+        SimpleDateFormat("dd MMM", Locale.getDefault())
+            .format(Date(expense.date))
     }
 
     Card(
@@ -193,7 +195,7 @@ private fun TransactionItem(expense: ExpenseEntity) {
         ) {
 
             Icon(
-                imageVector = Icons.Default.ArrowUpward,
+                imageVector = if (isIncome) Icons.Default.ArrowUpward else Icons.Default.ArrowDownward,
                 contentDescription = null,
                 tint = color
             )
@@ -202,7 +204,9 @@ private fun TransactionItem(expense: ExpenseEntity) {
 
             Column(Modifier.weight(1f)) {
                 Text(
-                    text = expense.note ?: if (isIncome) "دخل" else "مصروف",
+                    text = expense.note.ifBlank {
+                        if (isIncome) "دخل" else "مصروف"
+                    },
                     fontWeight = FontWeight.Medium
                 )
                 Text(
@@ -255,7 +259,7 @@ private fun AddTransactionDialog(
                     value = amount,
                     onValueChange = { amount = it },
                     label = { Text("المبلغ") },
-                    keyboardOptions = androidx.compose.ui.text.input.KeyboardOptions(
+                    keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
                     ),
                     singleLine = true,
