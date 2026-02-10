@@ -13,20 +13,26 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.lifecycleScope
+import com.naliam.monexlyx.data.SettingsDataStore
 import com.naliam.monexlyx.ui.HomeScreen
 import com.naliam.monexlyx.ui.SettingsScreen
 import com.naliam.monexlyx.ui.StatsScreen
 import com.naliam.monexlyx.ui.theme.MonexlyxTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val settingsStore = SettingsDataStore(this)
+
         setContent {
 
-            // 🔧 STATES GLOBAL (مربوطة فعليًا)
-            var darkMode by rememberSaveable { mutableStateOf(false) }
-            var notificationsEnabled by rememberSaveable { mutableStateOf(true) }
+            // 🔧 STATES مربوطة بـ DataStore
+            val darkMode by settingsStore.darkModeFlow.collectAsState(initial = false)
+            val notificationsEnabled by settingsStore.notificationsFlow.collectAsState(initial = true)
 
             MonexlyxTheme(
                 darkTheme = darkMode,
@@ -35,8 +41,16 @@ class MainActivity : ComponentActivity() {
                 AppRoot(
                     darkMode = darkMode,
                     notificationsEnabled = notificationsEnabled,
-                    onDarkModeChange = { darkMode = it },
-                    onNotificationsChange = { notificationsEnabled = it }
+                    onDarkModeChange = { enabled ->
+                        lifecycleScope.launch {
+                            settingsStore.setDarkMode(enabled)
+                        }
+                    },
+                    onNotificationsChange = { enabled ->
+                        lifecycleScope.launch {
+                            settingsStore.setNotifications(enabled)
+                        }
+                    }
                 )
             }
         }
