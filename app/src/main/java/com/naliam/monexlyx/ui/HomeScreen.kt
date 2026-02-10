@@ -6,8 +6,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.TrendingUp
-import androidx.compose.material.icons.filled.Wallet
+import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,14 +27,12 @@ fun HomeScreen(
 ) {
     val context = LocalContext.current
 
-    // 🔗 Room flows
     val totalIncome by expenseViewModel.totalIncome.collectAsState(initial = 0.0)
     val totalExpense by expenseViewModel.totalExpense.collectAsState(initial = 0.0)
     val allExpenses by expenseViewModel.allExpenses.collectAsState(initial = emptyList())
 
     val balance = totalIncome - totalExpense
 
-    // 🔧 Dialog state
     var showDialog by remember { mutableStateOf(false) }
     var isIncome by remember { mutableStateOf(false) }
 
@@ -75,7 +73,7 @@ fun HomeScreen(
                 Column(Modifier.padding(20.dp)) {
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Wallet, contentDescription = null)
+                        Icon(Icons.Default.AccountBalance, contentDescription = null)
                         Spacer(Modifier.width(8.dp))
                         Text("الرصيد الحالي", fontWeight = FontWeight.Medium)
                     }
@@ -96,7 +94,7 @@ fun HomeScreen(
                 }
             }
 
-            // ⚡ أزرار سريعة
+            // ⚡ أزرار
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -123,9 +121,6 @@ fun HomeScreen(
                 }
             }
 
-            // =========================
-            // 🧾 آخر العمليات
-            // =========================
             Text(
                 text = "آخر العمليات",
                 style = MaterialTheme.typography.titleMedium,
@@ -150,9 +145,6 @@ fun HomeScreen(
         }
     }
 
-    // =========================
-    // 💸 Dialog (دخل / مصروف)
-    // =========================
     if (showDialog) {
         AddTransactionDialog(
             isIncome = isIncome,
@@ -161,11 +153,7 @@ fun HomeScreen(
                 val value = amount.toDoubleOrNull()
 
                 if (value == null || value <= 0) {
-                    Toast.makeText(
-                        context,
-                        "❌ أدخل مبلغ صحيح",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(context, "❌ أدخل مبلغ صحيح", Toast.LENGTH_SHORT).show()
                     return@AddTransactionDialog
                 }
 
@@ -183,13 +171,11 @@ fun HomeScreen(
     }
 }
 
-// =========================
-// 📌 عنصر عملية واحدة
-// =========================
 @Composable
 private fun TransactionItem(expense: ExpenseEntity) {
     val isIncome = expense.type == "income"
-    val color = if (isIncome) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+    val color =
+        if (isIncome) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
 
     val date = remember(expense.date) {
         SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date(expense.date))
@@ -207,7 +193,7 @@ private fun TransactionItem(expense: ExpenseEntity) {
         ) {
 
             Icon(
-                imageVector = Icons.Default.TrendingUp,
+                imageVector = Icons.Default.ArrowUpward,
                 contentDescription = null,
                 tint = color
             )
@@ -235,9 +221,6 @@ private fun TransactionItem(expense: ExpenseEntity) {
     }
 }
 
-// =========================
-// ➕ Dialog
-// =========================
 @Composable
 private fun AddTransactionDialog(
     isIncome: Boolean,
