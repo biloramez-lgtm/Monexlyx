@@ -101,11 +101,11 @@ fun AppRoot(
                 )
             }
         }
-    ) { padding ->
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(paddingValues)
         ) {
             when (selectedTab) {
                 0 -> HomeScreen(expenseViewModel)
@@ -131,7 +131,7 @@ private fun NavItem(
     NavigationBarItem(
         selected = selected,
         onClick = onClick,
-        icon = { Icon(imageVector = icon, contentDescription = label) },
-        label = { Text(text = label) }
+        icon = { Icon(icon, contentDescription = label) },
+        label = { Text(label) }
     )
 }
