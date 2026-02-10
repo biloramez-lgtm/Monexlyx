@@ -14,11 +14,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.naliam.monexlyx.data.SettingsDataStore
 import com.naliam.monexlyx.ui.HomeScreen
 import com.naliam.monexlyx.ui.SettingsScreen
 import com.naliam.monexlyx.ui.StatsScreen
 import com.naliam.monexlyx.ui.theme.MonexlyxTheme
+import com.naliam.monexlyx.data.db.ExpenseViewModel
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -34,11 +36,15 @@ class MainActivity : ComponentActivity() {
             val darkMode by settingsStore.darkModeFlow.collectAsState(initial = false)
             val notificationsEnabled by settingsStore.notificationsFlow.collectAsState(initial = true)
 
+            // ✅ ExpenseViewModel (مربوط بالتطبيق)
+            val expenseViewModel: ExpenseViewModel = viewModel()
+
             MonexlyxTheme(
                 darkTheme = darkMode,
                 dynamicColor = false
             ) {
                 AppRoot(
+                    expenseViewModel = expenseViewModel,
                     darkMode = darkMode,
                     notificationsEnabled = notificationsEnabled,
                     onDarkModeChange = { enabled ->
@@ -59,6 +65,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppRoot(
+    expenseViewModel: ExpenseViewModel,
     darkMode: Boolean,
     notificationsEnabled: Boolean,
     onDarkModeChange: (Boolean) -> Unit,
@@ -98,7 +105,9 @@ fun AppRoot(
                 .padding(paddingValues)
         ) {
             when (selectedTab) {
-                0 -> HomeScreen()
+                0 -> HomeScreen(
+                    expenseViewModel = expenseViewModel
+                )
                 1 -> StatsScreen()
                 2 -> SettingsScreen(
                     darkMode = darkMode,
