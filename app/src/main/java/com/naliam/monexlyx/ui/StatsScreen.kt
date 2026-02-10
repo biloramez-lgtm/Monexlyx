@@ -1,19 +1,30 @@
 package com.naliam.monexlyx.ui
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.material.icons.filled.TrendingDown
 import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.naliam.monexlyx.data.db.ExpenseViewModel
 
 @Composable
-fun StatsScreen() {
+fun StatsScreen(
+    expenseViewModel: ExpenseViewModel
+) {
+    val totalIncome by expenseViewModel.totalIncome.collectAsState(initial = 0.0)
+    val totalExpense by expenseViewModel.totalExpense.collectAsState(initial = 0.0)
+
+    val balance = totalIncome - totalExpense
+    val maxValue = maxOf(totalIncome, totalExpense, 1.0)
 
     Column(
         modifier = Modifier
@@ -22,77 +33,92 @@ fun StatsScreen() {
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
 
-        // 📊 العنوان
         Text(
             text = "الإحصائيات",
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold
         )
 
-        // 💰 مجموع الدخل
+        // 💾 الدخل
         StatCard(
             title = "مجموع الدخل",
-            value = "0 $",
+            value = "${totalIncome.toInt()} $",
             icon = Icons.Default.TrendingUp,
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            color = MaterialTheme.colorScheme.primaryContainer
         )
 
-        // 💸 مجموع المصروف
+        // 💸 المصروف
         StatCard(
             title = "مجموع المصروف",
-            value = "0 $",
+            value = "${totalExpense.toInt()} $",
             icon = Icons.Default.TrendingDown,
-            containerColor = MaterialTheme.colorScheme.errorContainer
+            color = MaterialTheme.colorScheme.errorContainer
         )
 
-        // 📈 نسبة الادخار
+        // 💰 الرصيد
+        StatCard(
+            title = "الرصيد",
+            value = "${balance.toInt()} $",
+            icon = Icons.Default.Wallet,
+            color = MaterialTheme.colorScheme.secondaryContainer
+        )
+
+        // 📊 رسم الأعمدة (Bars)
         Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
-            )
-        ) {
-            Column(modifier = Modifier.padding(20.dp)) {
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.PieChart, contentDescription = null)
-                    Spacer(Modifier.width(8.dp))
-                    Text("نسبة الادخار", fontWeight = FontWeight.Medium)
-                }
-
-                Spacer(Modifier.height(12.dp))
-
-                LinearProgressIndicator(
-                    progress = 0f,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(8.dp)
-                )
-
-                Spacer(Modifier.height(8.dp))
-
-                Text("0%", style = MaterialTheme.typography.bodyMedium)
-            }
-        }
-
-        // 🚧 مخططات مستقبلية
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
-            )
+            modifier = Modifier.fillMaxWidth()
         ) {
             Column(
                 modifier = Modifier.padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text("📊 مخططات شهرية", fontWeight = FontWeight.Medium)
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    text = "سيتم إضافة الرسوم البيانية قريبًا",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Text("📊 مقارنة الدخل والمصروف", fontWeight = FontWeight.Medium)
+
+                Canvas(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(160.dp)
+                ) {
+                    val barWidth = size.width / 4
+
+                    val incomeHeight =
+                        (totalIncome / maxValue * size.height).toFloat()
+                    val expenseHeight =
+                        (totalExpense / maxValue * size.height).toFloat()
+
+                    // Income bar
+                    drawRect(
+                        color = Color(0xFF4CAF50),
+                        topLeft = Offset(
+                            x = size.width / 4 - barWidth / 2,
+                            y = size.height - incomeHeight
+                        ),
+                        size = androidx.compose.ui.geometry.Size(
+                            barWidth,
+                            incomeHeight
+                        )
+                    )
+
+                    // Expense bar
+                    drawRect(
+                        color = Color(0xFFF44336),
+                        topLeft = Offset(
+                            x = size.width * 3 / 4 - barWidth / 2,
+                            y = size.height - expenseHeight
+                        ),
+                        size = androidx.compose.ui.geometry.Size(
+                            barWidth,
+                            expenseHeight
+                        )
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Text("الدخل", color = Color(0xFF4CAF50))
+                    Text("المصروف", color = Color(0xFFF44336))
+                }
             }
         }
     }
@@ -103,22 +129,19 @@ private fun StatCard(
     title: String,
     value: String,
     icon: androidx.compose.ui.graphics.vector.ImageVector,
-    containerColor: androidx.compose.ui.graphics.Color
+    color: Color
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = containerColor)
+        colors = CardDefaults.cardColors(containerColor = color)
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-
+        Column(Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(icon, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
                 Text(title, fontWeight = FontWeight.Medium)
             }
-
             Spacer(Modifier.height(8.dp))
-
             Text(
                 text = value,
                 style = MaterialTheme.typography.headlineMedium,
