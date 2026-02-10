@@ -2,18 +2,19 @@ package com.naliam.monexlyx.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SettingsScreen() {
-
-    // 🔧 States
-    var darkMode by remember { mutableStateOf(false) }
-    var notificationsEnabled by remember { mutableStateOf(true) }
+fun SettingsScreen(
+    darkMode: Boolean,
+    notificationsEnabled: Boolean,
+    onDarkModeChange: (Boolean) -> Unit,
+    onNotificationsChange: (Boolean) -> Unit
+) {
 
     Column(
         modifier = Modifier
@@ -30,68 +31,29 @@ fun SettingsScreen() {
         )
 
         // 🌙 الوضع الليلي
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("🌙 الوضع الليلي")
-                Switch(
-                    checked = darkMode,
-                    onCheckedChange = { darkMode = it }
-                )
-            }
-        }
+        SettingsSwitchCard(
+            title = "🌙 الوضع الليلي",
+            checked = darkMode,
+            onCheckedChange = onDarkModeChange
+        )
 
         // 🔔 الإشعارات
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("🔔 الإشعارات")
-                Switch(
-                    checked = notificationsEnabled,
-                    onCheckedChange = { notificationsEnabled = it }
-                )
-            }
-        }
+        SettingsSwitchCard(
+            title = "🔔 الإشعارات",
+            checked = notificationsEnabled,
+            onCheckedChange = onNotificationsChange
+        )
 
         // 🌍 العملة
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                Text(
-                    text = "🌍 العملة",
-                    fontWeight = FontWeight.Medium
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = "USD ($)",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
+        SettingsInfoCard(
+            title = "🌍 العملة",
+            value = "USD ($)"
+        )
 
         // ℹ️ عن التطبيق
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                Text(
-                    text = "ℹ️ عن التطبيق",
-                    fontWeight = FontWeight.Medium
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = "Monexlyx\nإدارة الأموال والادخار\nالإصدار 1.0",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        }
+        SettingsInfoCard(
+            title = "ℹ️ عن التطبيق",
+            value = "Monexlyx\nإدارة الأموال والادخار\nالإصدار 1.0"
+        )
     }
 }
