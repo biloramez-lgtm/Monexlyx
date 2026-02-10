@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Night theme (Compose handles dark colors) -->
-    <style name="Theme.Monexlyx" parent="Theme.NoActionBar">
+    <!-- Night theme (Compose + Material3) -->
+    <style name="Theme.Monexlyx"
+        parent="Theme.Material3.DayNight.NoActionBar">
 
         <!-- Transparent status bar -->
         <item name="android:statusBarColor">@android:color/transparent</item>
-
-        <!-- Night mode status bar icons -->
-        <item name="android:windowLightStatusBar">false</item>
 
         <!-- No ActionBar -->
         <item name="android:windowActionBar">false</item>
