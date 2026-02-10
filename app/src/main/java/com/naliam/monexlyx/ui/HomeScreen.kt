@@ -32,7 +32,7 @@ fun HomeScreen(
             FloatingActionButton(
                 onClick = { showAddExpenseDialog = true }
             ) {
-                Icon(Icons.Default.Add, contentDescription = "إضافة عملية")
+                Icon(Icons.Default.Add, contentDescription = "إضافة مصروف")
             }
         }
     ) { paddingValues ->
@@ -45,14 +45,13 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
 
-            // 🔷 عنوان التطبيق
             Text(
                 text = "Monexlyx",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold
             )
 
-            // 💰 الرصيد الحالي
+            // 💰 الرصيد
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -83,7 +82,7 @@ fun HomeScreen(
                 }
             }
 
-            // 🎯 هدف الادخار (لسه ثابت)
+            // 🎯 هدف الادخار
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(20.dp)) {
 
@@ -97,7 +96,6 @@ fun HomeScreen(
                             Spacer(Modifier.width(8.dp))
                             Text("هدف الادخار", fontWeight = FontWeight.Medium)
                         }
-
                         Text("0 / 1000 $", style = MaterialTheme.typography.bodySmall)
                     }
 
@@ -111,11 +109,11 @@ fun HomeScreen(
                     )
 
                     Spacer(Modifier.height(8.dp))
-                    Text("0% مكتمل", style = MaterialTheme.typography.bodyMedium)
+                    Text("0% مكتمل")
                 }
             }
 
-            // 🎁 نقاط التحفيز (لسه ثابت)
+            // 🎁 نقاط
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -123,17 +121,13 @@ fun HomeScreen(
                 )
             ) {
                 Column(Modifier.padding(20.dp)) {
-
                     Text("🎁 نقاط التحفيز", fontWeight = FontWeight.Medium)
-
                     Spacer(Modifier.height(8.dp))
-
                     Text(
                         text = "0 نقطة",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     )
-
                     Text(
                         text = "سجّل عملياتك يوميًا لتحصل على نقاط",
                         style = MaterialTheme.typography.bodySmall
@@ -141,12 +135,11 @@ fun HomeScreen(
                 }
             }
 
-            // ⚡ أزرار سريعة
+            // ⚡ أزرار
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-
                 OutlinedButton(
                     onClick = { showAddExpenseDialog = true },
                     modifier = Modifier.weight(1f)
@@ -155,7 +148,7 @@ fun HomeScreen(
                 }
 
                 OutlinedButton(
-                    onClick = { /* لاحقًا */ },
+                    onClick = { },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("💾 دخل")
@@ -164,13 +157,17 @@ fun HomeScreen(
         }
     }
 
-    // =========================
-    // 💸 Dialog إضافة مصروف (لسه بدون حفظ)
-    // =========================
+    // 💸 Dialog إضافة مصروف (مربوط فعليًا)
     if (showAddExpenseDialog) {
         AddExpenseDialog(
             onDismiss = { showAddExpenseDialog = false },
-            onSave = { _, _ ->
+            onSave = { amount, note ->
+                amount.toDoubleOrNull()?.let {
+                    expenseViewModel.addExpense(
+                        amount = it,
+                        note = note
+                    )
+                }
                 showAddExpenseDialog = false
             }
         )
@@ -190,7 +187,7 @@ private fun AddExpenseDialog(
         confirmButton = {
             TextButton(
                 onClick = { onSave(amount, note) },
-                enabled = amount.isNotBlank()
+                enabled = amount.toDoubleOrNull() != null
             ) {
                 Text("حفظ")
             }
