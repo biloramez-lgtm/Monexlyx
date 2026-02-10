@@ -16,7 +16,7 @@ data class ExpenseEntity(
     val type: String,
 
     // وصف اختياري (مثلاً: أكل، مواصلات...)
-    val note: String,
+    val note: String = "",
 
     // التاريخ (timestamp)
     val date: Long = System.currentTimeMillis()
