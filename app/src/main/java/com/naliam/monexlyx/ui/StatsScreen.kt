@@ -3,15 +3,16 @@ package com.naliam.monexlyx.ui
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.TrendingDown
-import androidx.compose.material.icons.filled.TrendingUp
-import androidx.compose.material.icons.filled.Wallet
+import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.naliam.monexlyx.data.db.ExpenseViewModel
@@ -43,7 +44,7 @@ fun StatsScreen(
         StatCard(
             title = "مجموع الدخل",
             value = "${totalIncome.toInt()} $",
-            icon = Icons.Default.TrendingUp,
+            icon = Icons.Default.ArrowUpward,
             color = MaterialTheme.colorScheme.primaryContainer
         )
 
@@ -51,7 +52,7 @@ fun StatsScreen(
         StatCard(
             title = "مجموع المصروف",
             value = "${totalExpense.toInt()} $",
-            icon = Icons.Default.TrendingDown,
+            icon = Icons.Default.ArrowDownward,
             color = MaterialTheme.colorScheme.errorContainer
         )
 
@@ -59,14 +60,12 @@ fun StatsScreen(
         StatCard(
             title = "الرصيد",
             value = "${balance.toInt()} $",
-            icon = Icons.Default.Wallet,
+            icon = Icons.Default.AccountBalance,
             color = MaterialTheme.colorScheme.secondaryContainer
         )
 
-        // 📊 رسم الأعمدة (Bars)
-        Card(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        // 📊 رسم الأعمدة
+        Card(modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier = Modifier.padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -85,7 +84,6 @@ fun StatsScreen(
                     val expenseHeight =
                         (totalExpense / maxValue * size.height).toFloat()
 
-                    // Income bar
                     drawRect(
                         color = Color(0xFF4CAF50),
                         topLeft = Offset(
@@ -98,7 +96,6 @@ fun StatsScreen(
                         )
                     )
 
-                    // Expense bar
                     drawRect(
                         color = Color(0xFFF44336),
                         topLeft = Offset(
@@ -128,7 +125,7 @@ fun StatsScreen(
 private fun StatCard(
     title: String,
     value: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     color: Color
 ) {
     Card(
