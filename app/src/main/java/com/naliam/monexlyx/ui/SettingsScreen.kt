@@ -2,7 +2,7 @@ package com.naliam.monexlyx.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -11,83 +11,87 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SettingsScreen() {
 
-Column(
-modifier = Modifier
-.fillMaxSize()
-.padding(20.dp),
-verticalArrangement = Arrangement.spacedBy(20.dp)
-) {
+    // 🔧 States
+    var darkMode by remember { mutableStateOf(false) }
+    var notificationsEnabled by remember { mutableStateOf(true) }
 
-// 🔷 العنوان
-Text(
-text = "الإعدادات",
-style = MaterialTheme.typography.headlineLarge,
-fontWeight = FontWeight.Bold
-)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
 
-// 🌙 الوضع الليلي
-Card(modifier = Modifier.fillMaxWidth()) {
-Row(
-modifier = Modifier
-.fillMaxWidth()
-.padding(20.dp),
-verticalAlignment = Alignment.CenterVertically,
-horizontalArrangement = Arrangement.SpaceBetween
-) {
-Text("🌙 الوضع الليلي")
-Switch(
-checked = false,
-onCheckedChange = { }
-)
-}
-}
+        // 🔷 العنوان
+        Text(
+            text = "الإعدادات",
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold
+        )
 
-// 🔔 الإشعارات
-Card(modifier = Modifier.fillMaxWidth()) {
-Row(
-modifier = Modifier
-.fillMaxWidth()
-.padding(20.dp),
-verticalAlignment = Alignment.CenterVertically,
-horizontalArrangement = Arrangement.SpaceBetween
-) {
-Text("🔔 الإشعارات")
-Switch(
-checked = true,
-onCheckedChange = { }
-)
-}
-}
+        // 🌙 الوضع الليلي
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("🌙 الوضع الليلي")
+                Switch(
+                    checked = darkMode,
+                    onCheckedChange = { darkMode = it }
+                )
+            }
+        }
 
-// 🌍 العملة
-Card(modifier = Modifier.fillMaxWidth()) {
-Column(modifier = Modifier.padding(20.dp)) {
-Text(
-text = "🌍 العملة",
-fontWeight = FontWeight.Medium
-)
-Spacer(Modifier.height(8.dp))
-Text(
-text = "USD ($)",
-style = MaterialTheme.typography.bodyMedium,
-color = MaterialTheme.colorScheme.onSurfaceVariant
-)
-}
-}
+        // 🔔 الإشعارات
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("🔔 الإشعارات")
+                Switch(
+                    checked = notificationsEnabled,
+                    onCheckedChange = { notificationsEnabled = it }
+                )
+            }
+        }
 
-// ℹ️ عن التطبيق
-Card(modifier = Modifier.fillMaxWidth()) {
-Column(modifier = Modifier.padding(20.dp)) {
-Text(
-text = "ℹ️ عن التطبيق",
-fontWeight = FontWeight.Medium
-)
-Spacer(Modifier.height(8.dp))
-Text(
-text = "Monexlyx\nإدارة الأموال والادخار\nالإصدار 1.0",
-style = MaterialTheme.typography.bodyMedium
-)
-}
-}
-}
+        // 🌍 العملة
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(20.dp)) {
+                Text(
+                    text = "🌍 العملة",
+                    fontWeight = FontWeight.Medium
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = "USD ($)",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        // ℹ️ عن التطبيق
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(20.dp)) {
+                Text(
+                    text = "ℹ️ عن التطبيق",
+                    fontWeight = FontWeight.Medium
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = "Monexlyx\nإدارة الأموال والادخار\nالإصدار 1.0",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
+    }
 }
