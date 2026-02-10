@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- App Theme for Jetpack Compose (Material 3) -->
-    <style name="Theme.Monexlyx" parent="Theme.Material3.DayNight.NoActionBar">
+    <!-- Base application theme (minimal, Compose handles UI theme) -->
+    <style name="Theme.Monexlyx" parent="Theme.NoActionBar">
 
-        <!-- Status bar -->
+        <!-- Transparent status bar -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
 
-        <!-- Disable ActionBar completely -->
+        <!-- No ActionBar -->
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
 
