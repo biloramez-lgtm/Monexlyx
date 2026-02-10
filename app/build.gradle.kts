@@ -41,7 +41,7 @@ android {
     }
 
     composeOptions {
-        // ✅ متوافق مع BOM 2024 + Material3
+        // متوافق مع Compose BOM 2024
         kotlinCompilerExtensionVersion = "1.5.11"
     }
 
@@ -61,6 +61,11 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.8.2")
 
     // =====================
+    // 🔹 AppCompat (ضروري للـ XML Theme)
+    // =====================
+    implementation("androidx.appcompat:appcompat:1.6.1")
+
+    // =====================
     // 🔹 Compose BOM
     // =====================
     implementation(platform("androidx.compose:compose-bom:2024.02.00"))
@@ -68,10 +73,12 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
 
-    // ✅ Material 3 فقط
+    // =====================
+    // 🔹 Material 3 (Compose فقط)
+    // =====================
     implementation("androidx.compose.material3:material3")
 
-    // ✅ Icons (تعمل مع M3)
+    // Icons
     implementation("androidx.compose.material:material-icons-extended")
 
     // =====================
