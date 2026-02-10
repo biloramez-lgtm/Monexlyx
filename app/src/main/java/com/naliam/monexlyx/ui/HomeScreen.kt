@@ -12,9 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.naliam.monexlyx.data.db.ExpenseViewModel
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    expenseViewModel: ExpenseViewModel
+) {
+    // 🔗 Room flows
+    val totalIncome by expenseViewModel.totalIncome.collectAsState(initial = 0.0)
+    val totalExpense by expenseViewModel.totalExpense.collectAsState(initial = 0.0)
+
+    val balance = totalIncome - totalExpense
 
     // 🔧 Dialog state
     var showAddExpenseDialog by remember { mutableStateOf(false) }
@@ -62,20 +70,20 @@ fun HomeScreen() {
                     Spacer(Modifier.height(12.dp))
 
                     Text(
-                        text = "0 $",
+                        text = "${balance.toInt()} $",
                         style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.Bold
                     )
 
                     Text(
-                        text = "آخر تحديث: اليوم",
+                        text = "الدخل: ${totalIncome.toInt()} $  •  المصروف: ${totalExpense.toInt()} $",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
 
-            // 🎯 هدف الادخار
+            // 🎯 هدف الادخار (لسه ثابت)
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(20.dp)) {
 
@@ -107,7 +115,7 @@ fun HomeScreen() {
                 }
             }
 
-            // 🎁 نقاط التحفيز
+            // 🎁 نقاط التحفيز (لسه ثابت)
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -147,7 +155,7 @@ fun HomeScreen() {
                 }
 
                 OutlinedButton(
-                    onClick = { /* لاحقًا: إضافة دخل */ },
+                    onClick = { /* لاحقًا */ },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("💾 دخل")
@@ -157,13 +165,12 @@ fun HomeScreen() {
     }
 
     // =========================
-    // 💸 Dialog إضافة مصروف
+    // 💸 Dialog إضافة مصروف (لسه بدون حفظ)
     // =========================
     if (showAddExpenseDialog) {
         AddExpenseDialog(
             onDismiss = { showAddExpenseDialog = false },
-            onSave = { amount, note ->
-                // 🔜 لاحقًا: حفظ في Room / ViewModel
+            onSave = { _, _ ->
                 showAddExpenseDialog = false
             }
         )
@@ -182,9 +189,7 @@ private fun AddExpenseDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(
-                onClick = {
-                    onSave(amount, note)
-                },
+                onClick = { onSave(amount, note) },
                 enabled = amount.isNotBlank()
             ) {
                 Text("حفظ")
@@ -195,9 +200,7 @@ private fun AddExpenseDialog(
                 Text("إلغاء")
             }
         },
-        title = {
-            Text("➕ إضافة مصروف")
-        },
+        title = { Text("➕ إضافة مصروف") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
 
