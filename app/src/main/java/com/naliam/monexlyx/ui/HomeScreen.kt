@@ -45,6 +45,7 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
 
+            // 🔷 العنوان
             Text(
                 text = "Monexlyx",
                 style = MaterialTheme.typography.headlineLarge,
@@ -82,7 +83,7 @@ fun HomeScreen(
                 }
             }
 
-            // 🎯 هدف الادخار
+            // 🎯 هدف الادخار (ثابت حاليًا)
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(20.dp)) {
 
@@ -113,7 +114,7 @@ fun HomeScreen(
                 }
             }
 
-            // 🎁 نقاط
+            // 🎁 نقاط التحفيز
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -135,11 +136,12 @@ fun HomeScreen(
                 }
             }
 
-            // ⚡ أزرار
+            // ⚡ أزرار سريعة
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+
                 OutlinedButton(
                     onClick = { showAddExpenseDialog = true },
                     modifier = Modifier.weight(1f)
@@ -148,7 +150,7 @@ fun HomeScreen(
                 }
 
                 OutlinedButton(
-                    onClick = { },
+                    onClick = { /* لاحقًا دخل */ },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("💾 دخل")
@@ -157,17 +159,14 @@ fun HomeScreen(
         }
     }
 
-    // 💸 Dialog إضافة مصروف (مربوط فعليًا)
+    // =========================
+    // 💸 Dialog إضافة مصروف (مربوط مع Room فعليًا)
+    // =========================
     if (showAddExpenseDialog) {
         AddExpenseDialog(
             onDismiss = { showAddExpenseDialog = false },
             onSave = { amount, note ->
-                amount.toDoubleOrNull()?.let {
-                    expenseViewModel.addExpense(
-                        amount = it,
-                        note = note
-                    )
-                }
+                expenseViewModel.addExpense(amount, note)
                 showAddExpenseDialog = false
             }
         )
