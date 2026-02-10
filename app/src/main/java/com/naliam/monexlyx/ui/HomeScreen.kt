@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.naliam.monexlyx.data.db.ExpenseViewModel
 import com.naliam.monexlyx.data.entity.ExpenseEntity
@@ -254,6 +256,9 @@ private fun AddTransactionDialog(
                     value = amount,
                     onValueChange = { amount = it },
                     label = { Text("المبلغ") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
