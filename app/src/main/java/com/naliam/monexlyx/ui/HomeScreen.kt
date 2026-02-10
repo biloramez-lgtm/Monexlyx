@@ -2,6 +2,8 @@ package com.naliam.monexlyx.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.TrendingUp
@@ -15,6 +17,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.naliam.monexlyx.data.db.ExpenseViewModel
+import com.naliam.monexlyx.data.entity.ExpenseEntity
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun HomeScreen(
@@ -25,6 +30,8 @@ fun HomeScreen(
     // 🔗 Room flows
     val totalIncome by expenseViewModel.totalIncome.collectAsState(initial = 0.0)
     val totalExpense by expenseViewModel.totalExpense.collectAsState(initial = 0.0)
+    val allExpenses by expenseViewModel.allExpenses.collectAsState(initial = emptyList())
+
     val balance = totalIncome - totalExpense
 
     // 🔧 Dialog state
@@ -115,6 +122,31 @@ fun HomeScreen(
                     Text("💾 دخل")
                 }
             }
+
+            // =========================
+            // 🧾 آخر العمليات
+            // =========================
+            Text(
+                text = "آخر العمليات",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+
+            if (allExpenses.isEmpty()) {
+                Text(
+                    text = "لا توجد عمليات بعد",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(allExpenses.take(5)) { expense ->
+                        TransactionItem(expense)
+                    }
+                }
+            }
         }
     }
 
@@ -151,6 +183,61 @@ fun HomeScreen(
     }
 }
 
+// =========================
+// 📌 عنصر عملية واحدة
+// =========================
+@Composable
+private fun TransactionItem(expense: ExpenseEntity) {
+    val isIncome = expense.type == "income"
+    val color = if (isIncome) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+
+    val date = remember(expense.date) {
+        SimpleDateFormat("dd MMM", Locale.getDefault()).format(Date(expense.date))
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Icon(
+                imageVector = Icons.Default.TrendingUp,
+                contentDescription = null,
+                tint = color
+            )
+
+            Spacer(Modifier.width(12.dp))
+
+            Column(Modifier.weight(1f)) {
+                Text(
+                    text = expense.note ?: if (isIncome) "دخل" else "مصروف",
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = date,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Text(
+                text = "${if (isIncome) "+" else "-"}${expense.amount.toInt()} $",
+                fontWeight = FontWeight.Bold,
+                color = color
+            )
+        }
+    }
+}
+
+// =========================
+// ➕ Dialog
+// =========================
 @Composable
 private fun AddTransactionDialog(
     isIncome: Boolean,
