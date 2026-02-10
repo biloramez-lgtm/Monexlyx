@@ -15,8 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardOptions
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.naliam.monexlyx.data.db.ExpenseViewModel
 import com.naliam.monexlyx.data.entity.ExpenseEntity
@@ -65,7 +63,6 @@ fun HomeScreen(
                 fontWeight = FontWeight.Bold
             )
 
-            // 💰 الرصيد
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -96,7 +93,6 @@ fun HomeScreen(
                 }
             }
 
-            // أزرار الإضافة
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -203,9 +199,9 @@ private fun TransactionItem(expense: ExpenseEntity) {
 
             Column(Modifier.weight(1f)) {
                 Text(
-                    text = expense.note?.ifBlank {
+                    text = expense.note.ifBlank {
                         if (isIncome) "دخل" else "مصروف"
-                    } ?: if (isIncome) "دخل" else "مصروف",
+                    },
                     fontWeight = FontWeight.Medium
                 )
                 Text(
@@ -258,9 +254,6 @@ private fun AddTransactionDialog(
                     value = amount,
                     onValueChange = { amount = it },
                     label = { Text("المبلغ") },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    ),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
