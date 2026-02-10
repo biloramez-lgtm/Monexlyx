@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.ShowChart
+import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,11 +32,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-            // 🔧 DataStore states
             val darkMode by settingsStore.darkModeFlow.collectAsState(initial = false)
             val notificationsEnabled by settingsStore.notificationsFlow.collectAsState(initial = true)
 
-            // ✅ ViewModel (AndroidViewModel شغال صح)
             val expenseViewModel: ExpenseViewModel = viewModel()
 
             MonexlyxTheme(
@@ -47,14 +45,14 @@ class MainActivity : ComponentActivity() {
                     expenseViewModel = expenseViewModel,
                     darkMode = darkMode,
                     notificationsEnabled = notificationsEnabled,
-                    onDarkModeChange = { enabled ->
+                    onDarkModeChange = {
                         lifecycleScope.launch {
-                            settingsStore.setDarkMode(enabled)
+                            settingsStore.setDarkMode(it)
                         }
                     },
-                    onNotificationsChange = { enabled ->
+                    onNotificationsChange = {
                         lifecycleScope.launch {
-                            settingsStore.setNotifications(enabled)
+                            settingsStore.setNotifications(it)
                         }
                     }
                 )
@@ -71,7 +69,6 @@ fun AppRoot(
     onDarkModeChange: (Boolean) -> Unit,
     onNotificationsChange: (Boolean) -> Unit
 ) {
-
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
 
     Scaffold(
@@ -86,7 +83,7 @@ fun AppRoot(
                 NavItem(
                     selected = selectedTab == 1,
                     onClick = { selectedTab = 1 },
-                    icon = Icons.Default.ShowChart,
+                    icon = Icons.Default.TrendingUp,
                     label = "إحصائيات"
                 )
                 NavItem(
@@ -97,16 +94,15 @@ fun AppRoot(
                 )
             }
         }
-    ) { paddingValues ->
-
+    ) { padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(padding)
         ) {
             when (selectedTab) {
-                0 -> HomeScreen(expenseViewModel = expenseViewModel)
-                1 -> StatsScreen()
+                0 -> HomeScreen(expenseViewModel)
+                1 -> StatsScreen(expenseViewModel)
                 2 -> SettingsScreen(
                     darkMode = darkMode,
                     notificationsEnabled = notificationsEnabled,
