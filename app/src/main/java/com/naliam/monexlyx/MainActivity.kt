@@ -3,7 +3,9 @@ package com.naliam.monexlyx
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -31,20 +33,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
-            /* =======================
-               Compose CoroutineScope
-               ======================= */
             val coroutineScope = rememberCoroutineScope()
 
-            /* =======================
-               DataStore states
-               ======================= */
             val darkMode by settingsStore.darkModeFlow.collectAsState(initial = false)
             val notificationsEnabled by settingsStore.notificationsFlow.collectAsState(initial = true)
 
-            /* =======================
-               ViewModel
-               ======================= */
             val expenseViewModel: ExpenseViewModel = viewModel()
 
             MonexlyxTheme(
@@ -55,14 +48,14 @@ class MainActivity : ComponentActivity() {
                     expenseViewModel = expenseViewModel,
                     darkMode = darkMode,
                     notificationsEnabled = notificationsEnabled,
-                    onDarkModeChange = { enabled ->
+                    onDarkModeChange = {
                         coroutineScope.launch {
-                            settingsStore.setDarkMode(enabled)
+                            settingsStore.setDarkMode(it)
                         }
                     },
-                    onNotificationsChange = { enabled ->
+                    onNotificationsChange = {
                         coroutineScope.launch {
-                            settingsStore.setNotifications(enabled)
+                            settingsStore.setNotifications(it)
                         }
                     }
                 )
@@ -70,10 +63,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-/* =======================
-   Navigation Root
-   ======================= */
 
 @Composable
 fun AppRoot(
@@ -128,10 +117,6 @@ fun AppRoot(
     }
 }
 
-/* =======================
-   Bottom Navigation Item
-   ======================= */
-
 @Composable
 private fun NavItem(
     selected: Boolean,
@@ -143,6 +128,6 @@ private fun NavItem(
         selected = selected,
         onClick = onClick,
         icon = { Icon(icon, contentDescription = label) },
-        label = { Text(label) }
+        label = { Text(text = label) }
     )
 }
