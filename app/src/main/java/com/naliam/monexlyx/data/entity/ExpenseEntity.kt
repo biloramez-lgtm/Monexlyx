@@ -3,9 +3,7 @@ package com.naliam.monexlyx.data.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "expenses"
-)
+@Entity(tableName = "expenses")
 data class ExpenseEntity(
 
     @PrimaryKey(autoGenerate = true)
@@ -18,7 +16,7 @@ data class ExpenseEntity(
     val type: String,
 
     // 📝 ملاحظة اختيارية
-    val note: String = "",
+    val note: String? = null,
 
     // 🕒 التاريخ (Timestamp)
     val date: Long = System.currentTimeMillis()
