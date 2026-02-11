@@ -41,7 +41,7 @@ android {
     }
 
     composeOptions {
-        // ✅ متوافق مع Kotlin 1.9.22
+        // ✅ متوافق مع Kotlin 1.9.23
         kotlinCompilerExtensionVersion = "1.5.11"
     }
 
