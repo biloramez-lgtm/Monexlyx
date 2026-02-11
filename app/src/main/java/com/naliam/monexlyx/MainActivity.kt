@@ -19,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.naliam.monexlyx.data.SettingsDataStore
 import com.naliam.monexlyx.data.db.ExpenseViewModel
@@ -39,8 +40,11 @@ class MainActivity : ComponentActivity() {
 
             val coroutineScope = rememberCoroutineScope()
 
-            val darkMode by settingsStore.darkModeFlow.collectAsState(initial = false)
-            val notificationsEnabled by settingsStore.notificationsFlow.collectAsState(initial = true)
+            val darkMode by settingsStore.darkModeFlow
+                .collectAsStateWithLifecycle(initialValue = false)
+
+            val notificationsEnabled by settingsStore.notificationsFlow
+                .collectAsStateWithLifecycle(initialValue = true)
 
             val expenseViewModel: ExpenseViewModel = viewModel()
 
@@ -76,7 +80,7 @@ fun AppRoot(
     onDarkModeChange: (Boolean) -> Unit,
     onNotificationsChange: (Boolean) -> Unit
 ) {
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    var selectedTab by rememberSaveable { mutableStateOf(0) }
 
     Scaffold(
         bottomBar = {
@@ -91,7 +95,7 @@ fun AppRoot(
                     selected = selectedTab == 1,
                     onClick = { selectedTab = 1 },
                     icon = Icons.Default.TrendingUp,
-                    label = "إحصائيات"
+                    label = "الإحصائيات"
                 )
                 NavItem(
                     selected = selectedTab == 2,
@@ -102,6 +106,7 @@ fun AppRoot(
             }
         }
     ) { paddingValues ->
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -137,6 +142,8 @@ private fun NavItem(
                 contentDescription = label
             )
         },
-        label = { Text(text = label) }
+        label = {
+            Text(text = label)
+        }
     )
 }
