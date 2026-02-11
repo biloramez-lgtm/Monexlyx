@@ -21,17 +21,32 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: 🔎 Show Java Version
+        run: java -version
+
+      - name: 🔎 Show Gradle Version
+        run: ./gradlew --version
+
+      - name: 🔎 Show gradle.properties
+        run: cat gradle.properties || echo "No gradle.properties found"
+
       - name: 🧱 Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: 📦 Build Debug APK
-        run: ./gradlew assembleDebug
+      - name: 🔍 Clean Project (Verbose)
+        run: ./gradlew clean --stacktrace --info --debug
 
-      - name: 📦 Build Release APK
-        run: ./gradlew assembleRelease
+      - name: 📦 Build Debug APK (Full Logs)
+        run: ./gradlew assembleDebug --stacktrace --info --debug
 
-      - name: 📦 Build Release AAB
-        run: ./gradlew bundleRelease
+      - name: 📦 Build Release APK (Full Logs)
+        run: ./gradlew assembleRelease --stacktrace --info --debug
+
+      - name: 📦 Build Release AAB (Full Logs)
+        run: ./gradlew bundleRelease --stacktrace --info --debug
+
+      - name: 📂 List Build Outputs
+        run: ls -R app/build/outputs || echo "No outputs found"
 
       - name: 📤 Upload APK & AAB
         uses: actions/upload-artifact@v4
