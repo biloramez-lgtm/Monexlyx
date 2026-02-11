@@ -1,4 +1,4 @@
-name: Android Build
+name: Android Debug Build
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🧱 Grant execute permission for gradlew
+      - name: 🧱 Give permission to gradlew
         run: chmod +x gradlew
 
       - name: ☕ Set up JDK 17
@@ -28,8 +28,14 @@ jobs:
       - name: 🔎 Show Gradle Version
         run: ./gradlew --version
 
-      - name: 🧹 Clean Project (Full Logs)
-        run: ./gradlew clean --stacktrace --info --debug
+      - name: 🧹 Clean Project
+        run: ./gradlew clean
 
-      - name: 📦 Build Debug APK (Full Logs)
-        run: ./gradlew assembleDebug --stacktrace --info --debug
+      - name: 📦 Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: 📤 Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Monexlyx-Debug-APK
+          path: app/build/outputs/apk/debug/*.apk
