@@ -3,8 +3,6 @@ name: Android Build
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -14,6 +12,9 @@ jobs:
     steps:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
+
+      - name: 🧱 Grant execute permission for gradlew
+        run: chmod +x gradlew
 
       - name: ☕ Set up JDK 17
         uses: actions/setup-java@v4
@@ -27,32 +28,8 @@ jobs:
       - name: 🔎 Show Gradle Version
         run: ./gradlew --version
 
-      - name: 🔎 Show gradle.properties
-        run: cat gradle.properties || echo "No gradle.properties found"
-
-      - name: 🧱 Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: 🔍 Clean Project (Verbose)
+      - name: 🧹 Clean Project (Full Logs)
         run: ./gradlew clean --stacktrace --info --debug
 
       - name: 📦 Build Debug APK (Full Logs)
         run: ./gradlew assembleDebug --stacktrace --info --debug
-
-      - name: 📦 Build Release APK (Full Logs)
-        run: ./gradlew assembleRelease --stacktrace --info --debug
-
-      - name: 📦 Build Release AAB (Full Logs)
-        run: ./gradlew bundleRelease --stacktrace --info --debug
-
-      - name: 📂 List Build Outputs
-        run: ls -R app/build/outputs || echo "No outputs found"
-
-      - name: 📤 Upload APK & AAB
-        uses: actions/upload-artifact@v4
-        with:
-          name: Monexlyx-build
-          path: |
-            app/build/outputs/apk/debug/*.apk
-            app/build/outputs/apk/release/*.apk
-            app/build/outputs/bundle/release/*.aab
